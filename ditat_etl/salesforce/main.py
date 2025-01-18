@@ -49,8 +49,10 @@ class SalesforceObj():
 		client_id=None,
 		client_secret=None,
 		):
-		req_params =  inspect.getargspec(Salesforce)[0]
-		self.config_params = {i: j for i, j in config.items() if i in req_params}
+		req_params =  inspect.signature(Salesforce).parameters
+		self.config_params = {
+			key: value for key, value in config.items() if key in req_params
+		}
 		self.config_params['version'] = '53.0'
 
 		self.client_id = client_id
