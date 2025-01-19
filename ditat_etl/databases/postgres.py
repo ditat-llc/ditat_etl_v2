@@ -180,6 +180,9 @@ class Postgres:
 		
 		if mogrify and not mogrify_tuple:
 			raise ValueError('mogrify_tuple must be provided if mogrify is True.')
+		
+		if mogrify and df:
+			raise ValueError('Cannot return a DataFrame when mogrify is True.')
 
 		conn = psycopg2.connect(
 			**self.config,
@@ -308,10 +311,18 @@ class Postgres:
 		Returns:
 			- result (list): List of column names for tablename
 		'''
+		print(f"🔎 Checking columns for table: {tablename}")
+
 		table_info = self.get_table_info(tablename)
+
+		if table_info is None or table_info.empty:
+			raise ValueError(f'Table {tablename} does not exist in schema {self.schema} or has no columns.')
+
 		columns = table_info.column_name
 		if sort:
 			columns = columns.sort_values()
+
+		print(f"✅ Columns fetched for '{tablename}': {table_info['column_name'].tolist()}")
 		return columns.tolist()
 
 	@table_exists
