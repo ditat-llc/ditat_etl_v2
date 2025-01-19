@@ -278,15 +278,23 @@ class Postgres:
 		Returns:
 			result (list): List of column names for tablename
 		'''
-		query = 'SELECT * FROM information_schema.columns WHERE table_schema = %s AND table_name = %s;'
+		query = f"""
+			SELECT *
+			FROM information_schema.columns
+			WHERE table_schema = '{self.schema}'
+			AND table_name = '{tablename}';
+		"""
+		print(f'Executing query to fetch table info:\n{query}')
 
 		result = self.query(
 			query_statement=query,
 			df=True,
 			commit=False,
-			mogrify=True,
-			mogrify_tuple=(self.schema, tablename)
+			mogrify=False,
 		)
+		if result is None or result.empty:
+			raise ValueError(f'Table {tablename} does not exist in schema {self.schema}.')
+		
 		return result
 
 	@table_exists
