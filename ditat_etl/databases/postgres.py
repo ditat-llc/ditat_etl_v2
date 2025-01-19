@@ -136,37 +136,27 @@ class Postgres:
 		returning: bool=True,
 		mogrify: bool=False,
 		mogrify_tuple: Union[Tuple, List, None]=None,
-		verbose=False,
+		verbose=True,
 		timeout=1200,
 	):
 		'''
 		Low level method for querying.
-
 		Notes:
 			- If self.keep_connection_alive is False,
 				this method will create and destroy the connection each time.
 				If it is True, it will persist the connection.
-
 		Args:
 			- query_statement (str or list): A query or list of queries.
 				Order is important.
-			
 			- df (boolean, default=False): results as list of pd.DataFrame.
-			
 			- as_dict (boolean, default=False): If df is False, you have the
 				option of returning the column names in a dict instead of a list.
-
 			- commit (bool, default=True).
-
 			- returning (bool, default=True): Does the query or list of queries return.
 				Only returns the last query. Order is important.
-
 			- mogrify (bool, default=False): Mogrify the query passing a tuple for a single.
-
 			- mogrify_tuple (iterable, default=None): Values to be used when mogrigy is True.
-
 			- verbose (bool, default=True): Print query.
-
 			- timeout (int, default=600): Timeout in seconds.
 
 		Returns
