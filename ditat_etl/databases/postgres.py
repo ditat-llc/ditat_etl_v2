@@ -11,6 +11,7 @@ import numpy as np
 
 from ..time import TimeIt
 
+from typing import Union, List, Tuple
 
 warnings.filterwarnings('ignore')
 
@@ -128,13 +129,13 @@ class Postgres:
 	# @TimeIt()
 	def query(
 		self,
-		query_statement: list or str,
+		query_statement: Union[List[str], str],
 		df: bool=False,
 		as_dict: bool=False,
 		commit: bool=True,
 		returning: bool=True,
 		mogrify: bool=False,
-		mogrify_tuple: tuple or list=None,
+		mogrify_tuple: Union[Tuple, List, None]=None,
 		verbose=False,
 		timeout=1200,
 	):
@@ -174,6 +175,12 @@ class Postgres:
 				If given more than one query, it will only return the result
 				of the last one. Order of queries is important.
 		'''
+		if not isinstance(query_statement, (str, list)):
+			raise TypeError('query_statement must be a string or a list of strings.')
+		
+		if mogrify and not mogrify_tuple:
+			raise ValueError('mogrify_tuple must be provided if mogrify is True.')
+
 		conn = psycopg2.connect(
 			**self.config,
 			# options=f'-c statement_timeout={timeout}000'
@@ -222,10 +229,12 @@ class Postgres:
 		
 		except Exception as e:
 			# print(e)
+			print(f'Query failed: {e}')
 			print(traceback.format_exc())
+			return None
 
 		finally:
-			if self.keep_connection_alive is False:
+			if not self.keep_connection_alive:
 				conn.close()		
 
 	@property
