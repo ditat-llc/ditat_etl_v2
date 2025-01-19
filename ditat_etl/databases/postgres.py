@@ -136,7 +136,7 @@ class Postgres:
 		returning: bool=True,
 		mogrify: bool=False,
 		mogrify_tuple: Union[Tuple, List, None]=None,
-		verbose=True,
+		verbose=False,
 		timeout=1200,
 	):
 		'''
@@ -277,7 +277,7 @@ class Postgres:
 			WHERE table_schema = '{self.schema}'
 			AND table_name = '{tablename}';
 		"""
-		print(f'Executing query to fetch table info:\n{query}')
+		# print(f'Executing query to fetch table info:\n{query}')
 
 		result = self.query(
 			query_statement=query,
@@ -312,7 +312,7 @@ class Postgres:
 		if sort:
 			columns = columns.sort_values()
 
-		print(f"✅ Columns fetched for '{tablename}': {table_info['column_name'].tolist()}")
+		print(f"✅ Columns fetched for '{tablename}'")
 		return columns.tolist()
 
 	@table_exists
